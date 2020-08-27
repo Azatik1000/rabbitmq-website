@@ -89,3 +89,40 @@ Now update your service account by running:
 kubectl -n rabbitmq-system patch serviceaccount \
 rabbitmq-cluster-operator -p '{"imagePullSecrets": [{"name": "rabbitmq-cluster-registry-access"}]}'
 </pre>
+
+### <a id='openshift' class='anchor' href='#openshift'>Installation on Openshift</a>
+
+To install the RabbitMQ Cluster Kubernetes Operator on Openshift, you may need to perform some additional steps as below:
+
+1. Follow the [installation steps](#installation).
+2. Grant `anyuid` to have [access to SCC](https://docs.openshift.com/enterprise/3.1/admin_guide/manage_scc.html#grant-access-to-the-privileged-scc).
+<pre class="lang-bash">
+oc adm policy add-scc-to-user anyuid -z rabbitmq-cluster-operator -n rabbitmq-system
+</pre>
+3. Edit `rabbitmq-cluster-operator-role` cluster role to add the following rule.
+<pre class="lang-bash">
+kubectl edit clusterrole rabbitmq-cluster-operator-role
+</pre>
+<pre class="lang-bash">
+\- apiGroups:
+  \- rabbitmq.com
+  resources:
+  \- rabbitmqclusters/finalizers
+  verbs:
+  \- create
+  \- get
+  \- patch
+  \- update
+</pre>
+4. Edit `system:controller:statefulset-controller` cluster role to add the following rule.
+<pre class="lang-bash">
+kubectl edit clusterrole system:controller:statefulset-controller
+</pre>
+<pre class="lang-bash">
+\- apiGroups:
+  \- rabbitmq.com
+  resources:
+  \- rabbitmqclusters/finalizers
+  verbs:
+  \- update
+</pre>
