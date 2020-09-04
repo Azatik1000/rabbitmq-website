@@ -83,7 +83,6 @@ err = ch.Publish(
   false,        // mandatory
   false,
   amqp.Publishing {
-    DeliveryMode: amqp.Persistent,
     ContentType:  "text/plain",
     Body:         []byte(body),
   })
@@ -126,8 +125,8 @@ forever := make(chan bool)
 go func() {
   for d := range msgs {
     log.Printf("Received a message: %s", d.Body)
-    dot_count := bytes.Count(d.Body, []byte("."))
-    t := time.Duration(dot_count)
+    dotCount := bytes.Count(d.Body, []byte("."))
+    t := time.Duration(dotCount)
     time.Sleep(t * time.Second)
     log.Printf("Done")
   }
@@ -264,8 +263,8 @@ forever := make(chan bool)
 go func() {
   for d := range msgs {
     log.Printf("Received a message: %s", d.Body)
-    dot_count := bytes.Count(d.Body, []byte("."))
-    t := time.Duration(dot_count)
+    dotCount := bytes.Count(d.Body, []byte("."))
+    t := time.Duration(dotCount)
     time.Sleep(t * time.Second)
     log.Printf("Done")
     d.Ack(false)
@@ -572,8 +571,8 @@ func main() {
         go func() {
                 for d := range msgs {
                         log.Printf("Received a message: %s", d.Body)
-                        dot_count := bytes.Count(d.Body, []byte("."))
-                        t := time.Duration(dot_count)
+                        dotCount := bytes.Count(d.Body, []byte("."))
+                        t := time.Duration(dotCount)
                         time.Sleep(t * time.Second)
                         log.Printf("Done")
                         d.Ack(false)
